@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: app-sa
+  namespace: production
+  annotations:
+    azure.workload.identity/client-id: "01742cd1-b665-40ec-9b5f-08993cf3e895"

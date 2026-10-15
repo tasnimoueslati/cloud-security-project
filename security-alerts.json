@@ -1,0 +1,36 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: security-alerts
+  namespace: monitoring
+  labels:
+    release: kps
+spec:
+  groups:
+  - name: security.rules
+    rules:
+    - alert: HighRateOfHTTPClientErrors
+      expr: sum(increase(traefik_entrypoint_requests_total{code=~"4.."}[2m])) > 20
+      labels:
+        severity: warning
+        category: security
+      annotations:
+        summary: "Rafale d'erreurs HTTP 4xx sur l'Ingress"
+        description: "{{ $value | printf \"%.0f\" }} erreurs 4xx en 2 minutes (seuil : 20). Scan ou brute-force possible."
+    - alert: NodeHighCPU
+      expr: 100 * (1 - avg(rate(node_cpu_seconds_total{mode="idle"}[5m]))) > 90
+      for: 5m
+      labels:
+        severity: warning
+        category: operations
+      annotations:
+        summary: "CPU des nodes supérieur à 90 %"
+        description: "CPU moyen : {{ $value | printf \"%.0f\" }} % depuis plus de 5 minutes."
+    - alert: PodRestartingFrequently
+      expr: increase(kube_pod_container_status_restarts_total{namespace="production"}[10m]) > 3
+      labels:
+        severity: warning
+        category: operations
+      annotations:
+        summary: "Pod qui redémarre en boucle"
+        description: "{{ $labels.pod }} a redémarré plus de 3 fois en 10 minutes."

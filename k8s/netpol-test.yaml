@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: db
+  namespace: production
+  labels: { app: db }
+spec:
+  containers:
+  - name: nginx
+    image: nginx:alpine
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+  namespace: production
+spec:
+  selector: { app: db }
+  ports:
+  - port: 80
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: api
+  namespace: production
+  labels: { app: api }
+spec:
+  containers:
+  - name: curl
+    image: curlimages/curl
+    command: ["sleep", "3600"]
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: intruder
+  namespace: production
+  labels: { app: intruder }
+spec:
+  containers:
+  - name: curl
+    image: curlimages/curl
+    command: ["sleep", "3600"]

@@ -1,0 +1,15 @@
+[09:53:51 UTC] ETAPE 1 - Rafale de 150 requetes HTTP invalides vers mon Ingress
+[09:54:43 UTC] ETAPE 2 - Operations non autorisees sur l'API Kubernetes (developer-sa)
+Error from server (Forbidden): deployments.apps "web" is forbidden: User "system:serviceaccount:production:developer-sa" cannot delete resource "deployments" in API group "apps" in the namespace "production"
+error: failed to create deployment: deployments.apps is forbidden: User "system:serviceaccount:production:developer-sa" cannot create resource "deployments" in API group "apps" in the namespace "production"
+Error from server (Forbidden): deployments.apps "web" is forbidden: User "system:serviceaccount:production:developer-sa" cannot delete resource "deployments" in API group "apps" in the namespace "production"
+error: failed to create deployment: deployments.apps is forbidden: User "system:serviceaccount:production:developer-sa" cannot create resource "deployments" in API group "apps" in the namespace "production"
+Error from server (Forbidden): deployments.apps "web" is forbidden: User "system:serviceaccount:production:developer-sa" cannot delete resource "deployments" in API group "apps" in the namespace "production"
+error: failed to create deployment: deployments.apps is forbidden: User "system:serviceaccount:production:developer-sa" cannot create resource "deployments" in API group "apps" in the namespace "production"
+Error from server (Forbidden): deployments.apps "web" is forbidden: User "system:serviceaccount:production:developer-sa" cannot delete resource "deployments" in API group "apps" in the namespace "production"
+error: failed to create deployment: deployments.apps is forbidden: User "system:serviceaccount:production:developer-sa" cannot create resource "deployments" in API group "apps" in the namespace "production"
+Error from server (Forbidden): deployments.apps "web" is forbidden: User "system:serviceaccount:production:developer-sa" cannot delete resource "deployments" in API group "apps" in the namespace "production"
+error: failed to create deployment: deployments.apps is forbidden: User "system:serviceaccount:production:developer-sa" cannot create resource "deployments" in API group "apps" in the namespace "production"
+[09:54:56 UTC] ETAPE 3 - Mouvement lateral bloque (intruder vers db)
+code de sortie : 28 (28 = connexion bloquee)
+[09:55:00 UTC] FIN

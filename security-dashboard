@@ -1,0 +1,78 @@
+{
+  "title": "Cloud Security Monitor",
+  "uid": "cloud-security-monitor",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "10s",
+  "time": { "from": "now-1h", "to": "now" },
+  "panels": [
+    {
+      "id": 1, "type": "stat", "title": "Requêtes API refusées (401/403) - 1h",
+      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [ { "refId": "A", "datasource": { "type": "prometheus", "uid": "prometheus" },
+        "expr": "sum(increase(apiserver_request_total{code=~\"401|403\"}[1h]))" } ],
+      "fieldConfig": { "defaults": { "decimals": 0, "thresholds": { "mode": "absolute",
+        "steps": [ { "color": "green", "value": null }, { "color": "red", "value": 1 } ] } }, "overrides": [] },
+      "options": { "colorMode": "background" }
+    },
+    {
+      "id": 2, "type": "stat", "title": "Redémarrages de pods - 1h",
+      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [ { "refId": "A", "datasource": { "type": "prometheus", "uid": "prometheus" },
+        "expr": "sum(increase(kube_pod_container_status_restarts_total[1h]))" } ],
+      "fieldConfig": { "defaults": { "decimals": 0, "thresholds": { "mode": "absolute",
+        "steps": [ { "color": "green", "value": null }, { "color": "orange", "value": 1 }, { "color": "red", "value": 5 } ] } }, "overrides": [] },
+      "options": { "colorMode": "background" }
+    },
+    {
+      "id": 3, "type": "stat", "title": "Erreurs HTTP 4xx Traefik - 5 min",
+      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [ { "refId": "A", "datasource": { "type": "prometheus", "uid": "prometheus" },
+        "expr": "sum(increase(traefik_entrypoint_requests_total{code=~\"4..\"}[5m]))" } ],
+      "fieldConfig": { "defaults": { "decimals": 0, "thresholds": { "mode": "absolute",
+        "steps": [ { "color": "green", "value": null }, { "color": "orange", "value": 10 }, { "color": "red", "value": 50 } ] } }, "overrides": [] },
+      "options": { "colorMode": "background" }
+    },
+    {
+      "id": 4, "type": "stat", "title": "Pods de production en cours d'exécution",
+      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [ { "refId": "A", "datasource": { "type": "prometheus", "uid": "prometheus" },
+        "expr": "sum(kube_pod_status_phase{namespace=\"production\",phase=\"Running\"})" } ],
+      "fieldConfig": { "defaults": { "decimals": 0 }, "overrides": [] }
+    },
+    {
+      "id": 5, "type": "timeseries", "title": "Requêtes API refusées par code (req/s)",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 5 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [ { "refId": "A", "datasource": { "type": "prometheus", "uid": "prometheus" },
+        "legendFormat": "{{code}}", "expr": "sum by (code) (rate(apiserver_request_total{code=~\"401|403\"}[5m]))" } ]
+    },
+    {
+      "id": 6, "type": "timeseries", "title": "Requêtes HTTP Traefik par code (req/s)",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 5 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [ { "refId": "A", "datasource": { "type": "prometheus", "uid": "prometheus" },
+        "legendFormat": "{{code}}", "expr": "sum by (code) (rate(traefik_entrypoint_requests_total[1m]))" } ]
+    },
+    {
+      "id": 7, "type": "timeseries", "title": "CPU des nodes (%)",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 13 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "percent", "min": 0, "max": 100 }, "overrides": [] },
+      "targets": [ { "refId": "A", "datasource": { "type": "prometheus", "uid": "prometheus" },
+        "legendFormat": "CPU", "expr": "100 * (1 - avg(rate(node_cpu_seconds_total{mode=\"idle\"}[5m])))" } ]
+    },
+    {
+      "id": 8, "type": "timeseries", "title": "Mémoire des nodes (%)",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 13 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "percent", "min": 0, "max": 100 }, "overrides": [] },
+      "targets": [ { "refId": "A", "datasource": { "type": "prometheus", "uid": "prometheus" },
+        "legendFormat": "Mémoire", "expr": "100 * (1 - sum(node_memory_MemAvailable_bytes) / sum(node_memory_MemTotal_bytes))" } ]
+    }
+  ]
+}

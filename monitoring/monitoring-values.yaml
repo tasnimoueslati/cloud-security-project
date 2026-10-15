@@ -1,0 +1,55 @@
+kubeEtcd:
+  enabled: false
+kubeControllerManager:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeProxy:
+  enabled: false
+
+defaultRules:
+  rules:
+    etcd: false
+    kubeControllerManager: false
+    kubeProxy: false
+    kubeSchedulerAlerting: false
+    kubeSchedulerRecording: false
+
+prometheus:
+  prometheusSpec:
+    retention: 3d
+    resources:
+      requests:
+        memory: 400Mi
+
+    serviceMonitorSelectorNilUsesHelmValues: false
+    
+    
+alertmanager:
+  alertmanagerSpec:
+    secrets:
+      - alertmanager-smtp
+  config:
+    global:
+      resolve_timeout: 5m
+      smtp_smarthost: smtp.gmail.com:587
+      smtp_from: <ton-email>
+      smtp_auth_username: <ton-email>
+      smtp_auth_password_file: /etc/alertmanager/secrets/alertmanager-smtp/password
+      smtp_require_tls: true
+    route:
+      receiver: "null"
+      group_by: ["alertname", "namespace"]
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 4h
+      routes:
+        - receiver: email-security
+          matchers:
+            - 'category = "security"'
+    receivers:
+      - name: "null"
+      - name: email-security
+        email_configs:
+          - to: <ton-email>
+            send_resolved: true
